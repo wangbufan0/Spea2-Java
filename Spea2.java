@@ -63,6 +63,7 @@ public class Spea2 {
             Pop=PolynomialMutation(Enfants);
             G++;
         }
+        G=G;
     }
 
     void onPrint(List<IndividuVide> archive ,int G){
@@ -223,23 +224,23 @@ public class Spea2 {
                 }
             }
             while (nextGenArchive.size() > archiveSize) {
-                int k = 2;
-                int mm = 0;
+                int k = 1;
+                int min = 0;
+                int max;
                 while (k < NP) {
-                    mm = 0;
-                    boolean istrue = false;
+                    min = 0;
+                    max=0;
+
                     for (int i = 1; i < nextGenArchive.size(); i++) {
-                        if (!istrue && sigma[k][mm] != sigma[k][i]) {
-                            istrue = true;
-                        }
-                        if (sigma[k][mm] > sigma[k][i]) mm = i;
+                        if (sigma[k][min] > sigma[k][i]) min = i;
+                        else if(sigma[k][max]<sigma[k][i])max=i;
                     }
-                    if (istrue) break;
+                    if (max!=min) break;
                     k++;
                 }
-                nextGenArchive.remove(mm);
+                nextGenArchive.remove(min);
                 for (int i = 0; i < NP; i++) {
-                    sigma[i][mm] = sigma[i][nextGenArchive.size()];
+                    sigma[i][min] = sigma[i][nextGenArchive.size()];
                 }
             }
         }
@@ -285,6 +286,23 @@ public class Spea2 {
         }
 
         //计算距离
+//        double sigmas[][] = new double[NP*2][NP*2];
+//
+//        double z[]=new double[NP*2];
+//        for(int i=0;i<NP;i++){
+//            z[i*2]=P.get(i).valObjective[0];
+//            z[i*2+1]=P.get(i).valObjective[1];
+//        }
+//
+//        for (int i = 0; i < NP*2; i++) {
+//            for (int j = 0; j < NP*2; j++) {
+//                double mm =Math.sqrt((z[j]-z[i])*(z[j]-z[i]));
+//                sigmas[i][j] = mm;
+//                sigmas[j][i] = mm;
+//            }
+//        }
+
+        //计算距离
         double sigmas[][] = new double[NP][NP];
         for (int i = 0; i < NP; i++) {
             for (int j = 0; j < NP; j++) {
@@ -293,6 +311,8 @@ public class Spea2 {
                 sigmas[j][i] = mm;
             }
         }
+
+
         for (int i = 0; i < NP; i++) {
             double sigma[] = sigmas[i];
             Arrays.sort(sigma);
